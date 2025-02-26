@@ -1,0 +1,1 @@
+Este repositório contém a implementação do sistema de gerenciamento de biblioteca desenvolvido como parte de um projeto acadêmico para a faculdade. O projeto tem como objetivo oferecer funcionalidades para o gerenciamento de livros, usuários e empréstimos dentro de uma biblioteca, utilizando o framework ASP.NET Core para o back-end.
