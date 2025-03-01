@@ -28,5 +28,17 @@ namespace library_management_api.Controllers
             
             return Ok(response);
         }
+        [HttpPost("signin")]
+        public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Signup(SigninRequestDto signinRequest)
+        {
+            var response = await _authInterface.Signin(signinRequest);
+
+            if (response.Success is false)
+            {
+                return BadRequest(response);
+            }
+            
+            return Ok(response);
+        }
     }
 }

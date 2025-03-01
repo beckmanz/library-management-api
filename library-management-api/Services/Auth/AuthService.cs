@@ -61,7 +61,47 @@ public class AuthService : IAuthInterface
         }
         catch (Exception e)
         {
-            response.Data = null;
+            response.Message = e.Message;
+            response.Success = false;
+            return response;
+        }
+    }
+
+    public async Task<ResponseModel<AuthResponseDto>> Signin(SigninRequestDto signinRequest)
+    {
+        ResponseModel<AuthResponseDto> response = new ResponseModel<AuthResponseDto>();
+        try
+        {
+            var validUser = await _context.Librarys.FirstOrDefaultAsync(l => l.Email == signinRequest.Email);
+            if (validUser is null)
+            {
+                response.Success = false;
+                response.Message = "Acesso negado!";
+                return response;
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(signinRequest.Password, validUser.PasswordHash))
+            {
+                response.Success = false;
+                response.Message = "Acesso negado!";
+                return response;
+            }
+            
+            var token = GetAccessToken(validUser.Id.ToString(), validUser.Name);
+
+            var data = new AuthResponseDto()
+            {
+                Name = validUser.Name,
+                Id = validUser.Id.ToString(),
+                Token = token,
+            };
+            
+            response.Message = "Login realizado com sucesso!";
+            response.Data = data;
+            return response;
+        }
+        catch (Exception e)
+        {
             response.Message = e.Message;
             response.Success = false;
             return response;
@@ -89,8 +129,19 @@ public class AuthService : IAuthInterface
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public Task<LibraryModel> VerifyAccessToken(string token)
+    public async Task<LibraryModel> VerifyAccessToken(string token)
     {
-        throw new NotImplementedException();
+        var handler = new JwtSecurityTokenHandler();
+    
+        if (!handler.CanReadToken(token))
+        {
+            return null;
+        }
+            
+        var jwtToken = handler.ReadJwtToken(token);
+        var Id = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        
+        var Library = await _context.Librarys.FirstOrDefaultAsync(u => u.Id == new Guid(Id));
+        return Library;
     }
 }
