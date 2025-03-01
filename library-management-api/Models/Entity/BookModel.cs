@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace library_management_api.Models.Entity;
 
 public class BookModel
@@ -10,8 +12,10 @@ public class BookModel
     public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
     public Guid AuthorId { get; set; }
+    [JsonIgnore]
     public AuthorModel Author { get; set; }
 
     public Guid LibraryId { get; set; }
+    [JsonIgnore]
     public LibraryModel Library { get; set; }
 }

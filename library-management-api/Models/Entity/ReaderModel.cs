@@ -11,6 +11,7 @@ public class ReaderModel
     public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
 
     public Guid LibraryId { get; set; }
+    [JsonIgnore]
     public LibraryModel Library { get; set; }
     [JsonIgnore]
     public IEnumerable<LoanModel> Loans { get; set; }
