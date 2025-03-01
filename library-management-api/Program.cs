@@ -3,6 +3,7 @@ using library_management_api.Data;
 using library_management_api.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
+using library_management_api.Services.Book;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -19,6 +20,7 @@ builder.Services.AddControllers().AddFluentValidation(config =>
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAuthInterface, AuthService>();
+builder.Services.AddScoped<IBookInterface, BookService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
