@@ -40,5 +40,23 @@ namespace library_management_api.Controllers
             
             return Ok(response);
         }
+        [HttpGet]
+        public async Task<ActionResult<ResponseModel<object>>> GetAllBooks()
+        {
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                return Unauthorized("Acesso negado!");
+            }
+            var response = await _bookInterface.GetAllBooks(library);
+            if (response.Success is false)
+            {
+                return BadRequest(response);
+            }
+            
+            return Ok(response);
+        }
     }
 }

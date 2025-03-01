@@ -6,4 +6,5 @@ namespace library_management_api.Services.Book;
 public interface IBookInterface
 {
     Task<ResponseModel<BookModel>> AddBook(LibraryModel library, AddBookRequestDto request);
+    Task<ResponseModel<object>> GetAllBooks(LibraryModel library);
 }

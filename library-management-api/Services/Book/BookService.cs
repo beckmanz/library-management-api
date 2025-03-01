@@ -51,4 +51,29 @@ public class BookService : IBookInterface
             return response;
         }
     }
+
+    public async Task<ResponseModel<object>> GetAllBooks(LibraryModel library)
+    {
+        ResponseModel<object> response = new ResponseModel<object>();
+        try
+        {
+            var Books = await _context.Books.Where(x => x.LibraryId == library.Id).ToListAsync();
+            var Data = new
+            {
+                library.Id,
+                library.Name,
+                library.CreatedAt,
+                Books = Books
+            };
+            response.Message = "Books retornados com sucesso!";
+            response.Data = Data;
+            return response;
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+            return response;
+        }
+    }
 }
