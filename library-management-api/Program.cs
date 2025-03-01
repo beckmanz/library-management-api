@@ -35,6 +35,7 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
+        ValidateLifetime = false,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
@@ -43,14 +44,18 @@ builder.Services.AddAuthentication(x =>
     {
         OnAuthenticationFailed = context =>
         {
-            context.Response.StatusCode = 401;
-            return context.Response.WriteAsync("Acesso negado");
+            Console.WriteLine($"Falha na autenticação: {context.Exception.Message}");
+            return Task.CompletedTask;
         },
-        OnChallenge = context =>
+        OnChallenge = async context =>
         {
-            context.HandleResponse();
-            context.Response.StatusCode = 401;
-            return context.Response.WriteAsync("Acesso negado");
+            if (!context.Response.HasStarted)
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync("{\"error\": \"Acesso negado\"}");
+            }
         }
     };
 });
