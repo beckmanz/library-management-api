@@ -1,4 +1,5 @@
 using library_management_api.Data;
+using library_management_api.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IAuthInterface, AuthService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
