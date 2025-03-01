@@ -10,7 +10,7 @@ public class LoanMap : IEntityTypeConfiguration<LoanModel>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasOne<BookModel>()
+        builder.HasOne(x=> x.Book)
             .WithMany()
             .HasForeignKey(x => x.BookId)
             .OnDelete(DeleteBehavior.NoAction);

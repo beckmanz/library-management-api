@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace library_management_api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -105,7 +105,6 @@ namespace library_management_api.Migrations
                     ReturnedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsReturned = table.Column<bool>(type: "bit", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BookId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -117,12 +116,6 @@ namespace library_management_api.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Loans_Books_BookId1",
-                        column: x => x.BookId1,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Loans_Librarys_LibraryId",
                         column: x => x.LibraryId,
@@ -160,11 +153,6 @@ namespace library_management_api.Migrations
                 name: "IX_Loans_BookId",
                 table: "Loans",
                 column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Loans_BookId1",
-                table: "Loans",
-                column: "BookId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Loans_LibraryId",

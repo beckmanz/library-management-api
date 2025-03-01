@@ -122,9 +122,6 @@ namespace library_management_api.Migrations
                     b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BookId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsReturned")
                         .HasColumnType("bit");
 
@@ -146,8 +143,6 @@ namespace library_management_api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("BookId1");
 
                     b.HasIndex("LibraryId");
 
@@ -225,16 +220,10 @@ namespace library_management_api.Migrations
 
             modelBuilder.Entity("library_management_api.Models.Entity.LoanModel", b =>
                 {
-                    b.HasOne("library_management_api.Models.Entity.BookModel", null)
+                    b.HasOne("library_management_api.Models.Entity.BookModel", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("library_management_api.Models.Entity.BookModel", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId1")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("library_management_api.Models.Entity.LibraryModel", "Library")
