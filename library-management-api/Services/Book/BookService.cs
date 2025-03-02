@@ -19,7 +19,7 @@ public class BookService : IBookInterface
         ResponseModel<BookModel> response = new ResponseModel<BookModel>();
         try
         {
-            var Author = await _context.Authors.FirstOrDefaultAsync(x => x.Id == request.AuthorId);
+            var Author = await _context.Authors.FirstOrDefaultAsync(x => x.Id == request.AuthorId && x.LibraryId == library.Id);
             if (Author is null)
             {
                 response.Success = false;
@@ -39,7 +39,7 @@ public class BookService : IBookInterface
             };
             _context.Add(newBook);
             await _context.SaveChangesAsync();
-            
+
             response.Message = "Book cadastrado com sucesso!";
             response.Data = newBook;
             return response;
@@ -67,6 +67,31 @@ public class BookService : IBookInterface
             };
             response.Message = "Books retornados com sucesso!";
             response.Data = Data;
+            return response;
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+            return response;
+        }
+    }
+
+    public async Task<ResponseModel<BookModel>> GetBook(LibraryModel library, Guid Id)
+    {
+        ResponseModel<BookModel> response = new ResponseModel<BookModel>();
+        try
+        {
+            var Book = await _context.Books.FirstOrDefaultAsync(x => x.Id == Id && x.LibraryId == library.Id);
+            if (Book is null)
+            {
+                response.Success = false;
+                response.Message = "Nenhum livro encontrado!";
+                return response;
+            }
+
+            response.Message = "Book retornado com sucesso!";
+            response.Data = Book;
             return response;
         }
         catch (Exception e)

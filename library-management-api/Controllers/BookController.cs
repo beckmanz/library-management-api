@@ -34,9 +34,9 @@ namespace library_management_api.Controllers
             var response = await _bookInterface.AddBook(library, request);
             if (response.Success is false)
             {
-                return BadRequest(response);
+                return NotFound(response);
             }
-            
+
             return Ok(response);
         }
         [HttpGet]
@@ -53,7 +53,24 @@ namespace library_management_api.Controllers
             {
                 return BadRequest(response);
             }
-            
+
+            return Ok(response);
+        }
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ResponseModel<BookModel>>> GetBook(Guid Id)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                return Unauthorized("Acesso negado!");
+            }
+            var response = await _bookInterface.GetBook(library, Id);
+            if (response.Success is false)
+            {
+                return NotFound(response);
+            }
+
             return Ok(response);
         }
     }
