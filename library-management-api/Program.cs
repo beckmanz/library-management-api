@@ -1,11 +1,9 @@
-using System.Text;
 using library_management_api.Data;
 using library_management_api.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
+using library_management_api.Extensions;
 using library_management_api.Services.Book;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,41 +24,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = false,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"Falha na autenticação: {context.Exception.Message}");
-            return Task.CompletedTask;
-        },
-        OnChallenge = async context =>
-        {
-            if (!context.Response.HasStarted)
-            {
-                context.HandleResponse();
-                context.Response.StatusCode = 401;
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync("{\"error\": \"Acesso negado\"}");
-            }
-        }
-    };
-});
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
