@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Azure;
 using library_management_api.Data;
 using library_management_api.Models;
 using library_management_api.Models.Dto;
@@ -46,13 +47,10 @@ public class AuthService : IAuthInterface
             _context.Add(newLibrary);
             await _context.SaveChangesAsync();
             
-            var token = GetAccessToken(newLibrary.Id.ToString(), newLibrary.Name);
-
             var data = new AuthResponseDto()
             {
                 Name = newLibrary.Name,
                 Id = newLibrary.Id.ToString(),
-                Token = token,
             };
             
             response.Message = "Livraria registrada com sucesso!";
@@ -87,13 +85,11 @@ public class AuthService : IAuthInterface
                 return response;
             }
             
-            var token = GetAccessToken(validUser.Id.ToString(), validUser.Name);
 
             var data = new AuthResponseDto()
             {
                 Name = validUser.Name,
                 Id = validUser.Id.ToString(),
-                Token = token,
             };
             
             response.Message = "Login realizado com sucesso!";
