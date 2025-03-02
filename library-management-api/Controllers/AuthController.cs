@@ -20,12 +20,22 @@ namespace library_management_api.Controllers
         public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Signup(SignupRequestDto signupRequest)
         {
             var response = await _authInterface.Signup(signupRequest);
-
             if (response.Success is false)
             {
                 return BadRequest(response);
             }
             
+            var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
+            
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("AuthCookie", token, cookieOptions);
             return Ok(response);
         }
         [HttpPost("signin")]
@@ -38,6 +48,17 @@ namespace library_management_api.Controllers
                 return BadRequest(response);
             }
             
+            var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
+            
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("AuthCookie", token, cookieOptions);
             return Ok(response);
         }
     }
