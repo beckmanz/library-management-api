@@ -24,9 +24,9 @@ namespace library_management_api.Controllers
             {
                 return BadRequest(response);
             }
-            
+
             var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
-            
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -47,9 +47,9 @@ namespace library_management_api.Controllers
             {
                 return BadRequest(response);
             }
-            
+
             var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
-            
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -60,6 +60,19 @@ namespace library_management_api.Controllers
 
             Response.Cookies.Append("AuthCookie", token, cookieOptions);
             return Ok(response);
+        }
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            };
+            Response.Cookies.Delete("AuthCookie", cookieOptions);
+            return Ok(new { Message = "Logout realizado com sucesso" });
         }
     }
 }
