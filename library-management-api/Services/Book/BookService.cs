@@ -101,4 +101,45 @@ public class BookService : IBookInterface
             return response;
         }
     }
+
+    public async Task<ResponseModel<BookModel>> EditBook(LibraryModel library, EditBookRequestDto request)
+    {
+        ResponseModel<BookModel> response = new ResponseModel<BookModel>();
+        try
+        {
+            var Book = await _context.Books.FirstOrDefaultAsync(x => x.Id == request.Id && x.LibraryId == library.Id);
+            if (Book is null)
+            {
+                response.Success = false;
+                response.Message = "Nenhum livro encontrado!";
+                return response;
+            }
+            if (!string.IsNullOrWhiteSpace(request.Title)) Book.Title = request.Title;
+            if (!string.IsNullOrWhiteSpace(request.Genre)) Book.Genre = request.Genre;
+            if (request.PublicationYear.HasValue) Book.PublicationYear = request.PublicationYear.Value;
+            if (!string.IsNullOrWhiteSpace(request.AuthorId))
+            {
+                var Author = await _context.Authors.FirstOrDefaultAsync(x => x.Id == new Guid(request.AuthorId) && x.LibraryId == library.Id);
+                if (Author is null)
+                {
+                    response.Success = false;
+                    response.Message = "Nenhum author encontrado!";
+                    return response;
+                }
+                Book.AuthorId = Author.Id;
+                Book.Author = Author;
+            }
+            _context.Update(Book);
+            await _context.SaveChangesAsync();
+            response.Message = "Livro editado com sucesso!";
+            response.Data = Book;
+            return response;
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+            return response;
+        }
+    }
 }

@@ -8,4 +8,5 @@ public interface IBookInterface
     Task<ResponseModel<BookModel>> AddBook(LibraryModel library, AddBookRequestDto request);
     Task<ResponseModel<object>> GetAllBooks(LibraryModel library);
     Task<ResponseModel<BookModel>> GetBook(LibraryModel library, Guid Id);
+    Task<ResponseModel<BookModel>> EditBook(LibraryModel library, EditBookRequestDto request);
 }

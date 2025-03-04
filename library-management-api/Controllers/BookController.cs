@@ -73,5 +73,31 @@ namespace library_management_api.Controllers
 
             return Ok(response);
         }
+        [HttpPut]
+        public async Task<ActionResult<ResponseModel<BookModel>>> EditBook(EditBookRequestDto request)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                return Unauthorized("Acesso negado!");
+            }
+            
+            if (string.IsNullOrWhiteSpace(request.Title) &&
+                !request.PublicationYear.HasValue &&
+                string.IsNullOrWhiteSpace(request.AuthorId) &&
+                string.IsNullOrWhiteSpace(request.Genre))
+            {
+                return BadRequest("Nenhuma informação foi fornecida para atualização.");
+            }
+
+            var response = await _bookInterface.EditBook(library, request);
+            if (response.Success is false)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
+        }
     }
 }
