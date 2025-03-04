@@ -142,4 +142,35 @@ public class BookService : IBookInterface
             return response;
         }
     }
+
+    public async Task<ResponseModel<BookModel>> DeleteBook(LibraryModel library, Guid Id)
+    {
+        ResponseModel<BookModel> response = new ResponseModel<BookModel>();
+        try
+        {
+            var Book = await _context.Books.FirstOrDefaultAsync(x => x.Id == Id && x.LibraryId == library.Id);
+            if (Book is null)
+            {
+                response.Success = false;
+                response.Message = "Nenhum livro encontrado!";
+                return response;
+            }
+            if (!Book.IsAvailable)
+            {
+                response.Success = false;
+                response.Message = "O livro está emprestado e não pode ser excluído!";
+                return response;
+            }
+            _context.Remove(Book);
+            await _context.SaveChangesAsync();
+            response.Message = "livro excluido com sucesso!";
+            return response;
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+            return response;
+        }
+    }
 }
