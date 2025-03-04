@@ -99,5 +99,23 @@ namespace library_management_api.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete("{Id}")]
+        public async Task<ActionResult<ResponseModel<object>>> DeleteBook(Guid Id)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                return Unauthorized("Acesso negado!");
+            }
+            var response = await _bookInterface.DeleteBook(library, Id);
+            if (response.Success is false)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
+        }
     }
 }
