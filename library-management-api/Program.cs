@@ -3,6 +3,7 @@ using library_management_api.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 using library_management_api.Extensions;
+using library_management_api.Middlewares;
 using library_management_api.Services.Book;
 using Scalar.AspNetCore;
 
@@ -34,7 +35,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
