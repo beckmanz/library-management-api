@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Azure;
 using library_management_api.Data;
+using library_management_api.Exceptions;
 using library_management_api.Models;
 using library_management_api.Models.Dto;
 using library_management_api.Models.Entity;
@@ -25,83 +26,59 @@ public class AuthService : IAuthInterface
     public async Task<ResponseModel<AuthResponseDto>> Signup(SignupRequestDto signupRequest)
     {
         ResponseModel<AuthResponseDto> response = new ResponseModel<AuthResponseDto>();
-        try
+        var validEmail = await _context.Librarys.FirstOrDefaultAsync(l => l.Email == signupRequest.Email);
+        if (validEmail is not null)
         {
-            var validEmail = await _context.Librarys.FirstOrDefaultAsync(l => l.Email == signupRequest.Email);
-            if (validEmail is not null)
-            {
-                response.Success = false;
-                response.Message = "Email já existe!";
-                return response;
-            }
-
-            var hashPass = BCrypt.Net.BCrypt.HashPassword(signupRequest.Password);
-
-            var newLibrary = new LibraryModel()
-            {
-                Name = signupRequest.Name,
-                Email = signupRequest.Email,
-                PasswordHash = hashPass,
-            };
-
-            _context.Add(newLibrary);
-            await _context.SaveChangesAsync();
-            
-            var data = new AuthResponseDto()
-            {
-                Name = newLibrary.Name,
-                Id = newLibrary.Id.ToString(),
-            };
-            
-            response.Message = "Livraria registrada com sucesso!";
-            response.Data = data;
-            return response;
+            throw new ConflictException("Email já existe!");
         }
-        catch (Exception e)
+
+        var hashPass = BCrypt.Net.BCrypt.HashPassword(signupRequest.Password);
+
+        var newLibrary = new LibraryModel()
         {
-            response.Message = e.Message;
-            response.Success = false;
-            return response;
-        }
+            Name = signupRequest.Name,
+            Email = signupRequest.Email,
+            PasswordHash = hashPass,
+        };
+
+        _context.Add(newLibrary);
+        await _context.SaveChangesAsync();
+        
+        var data = new AuthResponseDto()
+        {
+            Name = newLibrary.Name,
+            Id = newLibrary.Id.ToString(),
+        };
+        
+        response.Message = "Livraria registrada com sucesso!";
+        response.Data = data;
+        return response;
     }
 
     public async Task<ResponseModel<AuthResponseDto>> Signin(SigninRequestDto signinRequest)
     {
         ResponseModel<AuthResponseDto> response = new ResponseModel<AuthResponseDto>();
-        try
+        var validUser = await _context.Librarys.FirstOrDefaultAsync(l => l.Email == signinRequest.Email);
+        if (validUser is null)
         {
-            var validUser = await _context.Librarys.FirstOrDefaultAsync(l => l.Email == signinRequest.Email);
-            if (validUser is null)
-            {
-                response.Success = false;
-                response.Message = "Acesso negado!";
-                return response;
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(signinRequest.Password, validUser.PasswordHash))
-            {
-                response.Success = false;
-                response.Message = "Acesso negado!";
-                return response;
-            }
-            
-
-            var data = new AuthResponseDto()
-            {
-                Name = validUser.Name,
-                Id = validUser.Id.ToString(),
-            };
-            
-            response.Message = "Login realizado com sucesso!";
-            response.Data = data;
-            return response;
+            throw new UnauthorizedException("Acesso negado!");
         }
-        catch (Exception e)
+
+        if (!BCrypt.Net.BCrypt.Verify(signinRequest.Password, validUser.PasswordHash))
         {
-            response.Message = e.Message;
-            response.Success = false;
-            return response;
+            throw new UnauthorizedException("Acesso negado!");
         }
+        
+
+        var data = new AuthResponseDto()
+        {
+            Name = validUser.Name,
+            Id = validUser.Id.ToString(),
+        };
+        
+        response.Message = "Login realizado com sucesso!";
+        response.Data = data;
+        return response;
     }
 
     public string GetAccessToken(string Id, string Name)

@@ -1,3 +1,4 @@
+using library_management_api.Exceptions;
 using library_management_api.Models.Dto;
 using library_management_api.Models.Entity;
 using library_management_api.Services.Auth;
@@ -29,14 +30,9 @@ namespace library_management_api.Controllers
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
-                return Unauthorized("Acesso negado!");
+                throw new UnauthorizedException("Acesso negado!");
             }
             var response = await _bookInterface.AddBook(library, request);
-            if (response.Success is false)
-            {
-                return NotFound(response);
-            }
-
             return Ok(response);
         }
         [HttpGet]
@@ -46,14 +42,9 @@ namespace library_management_api.Controllers
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
-                return Unauthorized("Acesso negado!");
+                throw new UnauthorizedException("Acesso negado!");
             }
             var response = await _bookInterface.GetAllBooks(library);
-            if (response.Success is false)
-            {
-                return BadRequest(response);
-            }
-
             return Ok(response);
         }
         [HttpGet("{Id}")]
@@ -63,14 +54,9 @@ namespace library_management_api.Controllers
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
-                return Unauthorized("Acesso negado!");
+                throw new UnauthorizedException("Acesso negado!");
             }
             var response = await _bookInterface.GetBook(library, Id);
-            if (response.Success is false)
-            {
-                return NotFound(response);
-            }
-
             return Ok(response);
         }
         [HttpPut]
@@ -80,26 +66,11 @@ namespace library_management_api.Controllers
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
-                return Unauthorized("Acesso negado!");
+                throw new UnauthorizedException("Acesso negado!");
             }
-            
-            if (string.IsNullOrWhiteSpace(request.Title) &&
-                !request.PublicationYear.HasValue &&
-                string.IsNullOrWhiteSpace(request.AuthorId) &&
-                string.IsNullOrWhiteSpace(request.Genre))
-            {
-                return BadRequest("Nenhuma informação foi fornecida para atualização.");
-            }
-
             var response = await _bookInterface.EditBook(library, request);
-            if (response.Success is false)
-            {
-                return NotFound(response);
-            }
-
             return Ok(response);
         }
-
         [HttpDelete("{Id}")]
         public async Task<ActionResult<ResponseModel<object>>> DeleteBook(Guid Id)
         {
@@ -107,14 +78,9 @@ namespace library_management_api.Controllers
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
-                return Unauthorized("Acesso negado!");
+                throw new UnauthorizedException("Acesso negado!");
             }
             var response = await _bookInterface.DeleteBook(library, Id);
-            if (response.Success is false)
-            {
-                return NotFound(response);
-            }
-
             return Ok(response);
         }
     }
