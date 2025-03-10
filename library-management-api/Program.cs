@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 using library_management_api.Extensions;
 using library_management_api.Middlewares;
+using library_management_api.Services.Author;
 using library_management_api.Services.Book;
 using Scalar.AspNetCore;
 
@@ -20,6 +21,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAuthInterface, AuthService>();
 builder.Services.AddScoped<IBookInterface, BookService>();
+builder.Services.AddScoped<IAuthorInterface, AuthorService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
