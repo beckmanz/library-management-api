@@ -9,4 +9,5 @@ public interface IAuthorInterface
     Task<ResponseModel<object>> GetAllAuthors(LibraryModel library);
     Task<ResponseModel<object>> GetAuthor(LibraryModel library, Guid Id);
     Task<ResponseModel<AuthorModel>> EditAuthor(LibraryModel library, Guid Id, EditAuthorRequestDto request);
+    Task<ResponseModel<AuthorModel>> DeleteAuthor(LibraryModel library, Guid Id);
 }

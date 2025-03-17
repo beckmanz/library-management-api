@@ -71,5 +71,17 @@ namespace library_management_api.Controllers
             var response = await _authorInterface.EditAuthor(library, Id, request);
             return Ok(response);
         }
+        [HttpDelete("{Id}")]
+        public async Task<ActionResult<ResponseModel<AuthorModel>>> DeleteAuthor(Guid Id)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            var response = await _authorInterface.DeleteAuthor(library, Id);
+            return Ok(response);
+        }
     }
 }

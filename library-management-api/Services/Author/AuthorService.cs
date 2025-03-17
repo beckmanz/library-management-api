@@ -99,4 +99,20 @@ public class AuthorService : IAuthorInterface
         response.Message = "Autor atualizado com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<AuthorModel>> DeleteAuthor(LibraryModel library, Guid Id)
+    {
+        ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+        var author = await _context.Authors
+            .FirstOrDefaultAsync(a => a.LibraryId == library.Id && a.Id == Id);
+        if (author is null)
+        {
+            throw new NotFoundException("Nenhum autor encontrado!");
+        }
+        _context.Remove(author);
+        await _context.SaveChangesAsync();
+        
+        response.Message = "Autor excluído com sucesso!";
+        return response;
+    }
 }
