@@ -7,4 +7,5 @@ public interface IAuthorInterface
 {
     Task<ResponseModel<AuthorModel>> AddAuthor(LibraryModel library, AddAuthorRequestDto author);
     Task<ResponseModel<object>> GetAllAuthors(LibraryModel library);
+    Task<ResponseModel<object>> GetAuthor(LibraryModel library, Guid Id);
 }

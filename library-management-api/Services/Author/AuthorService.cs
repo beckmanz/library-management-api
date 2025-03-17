@@ -1,4 +1,5 @@
 ﻿using library_management_api.Data;
+using library_management_api.Exceptions;
 using library_management_api.Models.Dto;
 using library_management_api.Models.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,30 @@ public class AuthorService : IAuthorInterface
         
         response.Message = "Autores retornados com sucesso!";
         response.Data = Data;
+        return response;
+    }
+
+    public async Task<ResponseModel<object>> GetAuthor(LibraryModel library, Guid Id)
+    {
+        ResponseModel<object> response = new ResponseModel<object>();
+        var author = await _context.Authors
+            .Include(a => a.Books)
+            .FirstOrDefaultAsync(a => a.LibraryId == library.Id && a.Id == Id);
+        if (author is null)
+        {
+            throw new NotFoundException("Nenhum autor encontrado!");
+        }
+
+        var dataAuthor = new
+        {
+            author.Id,
+            author.Name,
+            author.Nationality,
+            author.Books
+        };
+        
+        response.Data = dataAuthor;
+        response.Message = "Autor encontrado com sucesso!";
         return response;
     }
 }
