@@ -59,5 +59,17 @@ namespace library_management_api.Controllers
             var response = await _authorInterface.GetAuthor(library, Id);
             return Ok(response);
         }
+        [HttpPut("{Id}")]
+        public async Task<ActionResult<ResponseModel<AuthorModel>>> EditAuthor(Guid Id, EditAuthorRequestDto request)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            var response = await _authorInterface.EditAuthor(library, Id, request);
+            return Ok(response);
+        }
     }
 }

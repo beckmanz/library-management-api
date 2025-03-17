@@ -74,4 +74,29 @@ public class AuthorService : IAuthorInterface
         response.Message = "Autor encontrado com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<AuthorModel>> EditAuthor(LibraryModel library, Guid Id, EditAuthorRequestDto request)
+    {
+        ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+        var author = await _context.Authors
+            .FirstOrDefaultAsync(a => a.LibraryId == library.Id && a.Id == Id);
+        if (author is null)
+        {
+            throw new NotFoundException("Nenhum autor encontrado!");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Name) && string.IsNullOrWhiteSpace(request.Nationality))
+        {
+            throw new BadRequestException("Nenhuma informação foi fornecida para atualização.");
+        }
+        if(!string.IsNullOrWhiteSpace(request.Name)) author.Name = request.Name;
+        if(!string.IsNullOrWhiteSpace(request.Nationality)) author.Nationality = request.Nationality;
+        
+        _context.Update(author);
+        await _context.SaveChangesAsync();
+        
+        response.Data = author;
+        response.Message = "Autor atualizado com sucesso!";
+        return response;
+    }
 }
