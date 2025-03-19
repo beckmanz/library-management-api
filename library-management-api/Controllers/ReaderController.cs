@@ -1,0 +1,39 @@
+using library_management_api.Exceptions;
+using library_management_api.Models.Dto;
+using library_management_api.Models.Entity;
+using library_management_api.Services.Auth;
+using library_management_api.Services.Reader;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace library_management_api.Controllers
+{
+    [Route("api/[controller]")]
+    [Authorize]
+    [ApiController]
+    public class ReaderController : ControllerBase
+    {
+        private readonly IReaderInterface _readerInterface;
+        private readonly IAuthInterface _authInterface;
+
+        public ReaderController(IReaderInterface readerInterface, IAuthInterface authInterface)
+        {
+            _readerInterface = readerInterface;
+            _authInterface = authInterface;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ResponseModel<ReaderModel>>> AddReader(AddReaderRequestDto request)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            var response = await _readerInterface.AddReader(library, request);
+            return Ok(response);
+        }
+    }
+}
