@@ -6,4 +6,5 @@ namespace library_management_api.Services.Reader;
 public interface IReaderInterface
 {
     Task<ResponseModel<ReaderModel>> AddReader(LibraryModel library, AddReaderRequestDto request);
+    Task<ResponseModel<Object>> GetAllReaders(LibraryModel library);
 }

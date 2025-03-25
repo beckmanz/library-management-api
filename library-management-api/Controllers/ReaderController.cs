@@ -35,5 +35,17 @@ namespace library_management_api.Controllers
             var response = await _readerInterface.AddReader(library, request);
             return Ok(response);
         }
+        [HttpGet]
+        public async Task<ActionResult<ResponseModel<Object>>> GetAllReaders()
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            var response = await _readerInterface.GetAllReaders(library);
+            return Ok(response);
+        }
     }
 }

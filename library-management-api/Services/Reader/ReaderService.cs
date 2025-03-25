@@ -41,4 +41,20 @@ public class ReaderService : IReaderInterface
         response.Message = "Leitor cadastrado com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<object>> GetAllReaders(LibraryModel library)
+    {
+        ResponseModel<object> response = new ResponseModel<object>();
+        var readers = await _context.Readers.Where(x=> x.LibraryId == library.Id).ToListAsync();
+        var Data = new
+        {
+            library.Id,
+            library.Name,
+            library.CreatedAt,
+            Readers = readers
+        };
+        response.Message = "Readers retornados com sucesso!";
+        response.Data = Data;
+        return response;
+    }
 }
