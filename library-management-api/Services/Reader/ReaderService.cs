@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using library_management_api.Data;
+﻿using library_management_api.Data;
+using library_management_api.Exceptions;
 using library_management_api.Models.Dto;
 using library_management_api.Models.Entity;
 using Microsoft.EntityFrameworkCore;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace library_management_api.Services.Reader;
 
@@ -54,6 +55,33 @@ public class ReaderService : IReaderInterface
             Readers = readers
         };
         response.Message = "Readers retornados com sucesso!";
+        response.Data = Data;
+        return response;
+    }
+
+    public async Task<ResponseModel<Object>> GetReaderById(LibraryModel library, Guid Id)
+    {
+        ResponseModel<Object> response = new ResponseModel<Object>();
+        var reader = await _context.Readers
+            .Include(x => x.Loans)
+            .FirstOrDefaultAsync(x=> x.Id == Id && x.LibraryId == library.Id);
+        if (reader is null)
+        {
+            throw new NotFoundException("Nenhum reader encontrado!");
+        }
+
+        var Data = new
+        {
+            reader.Id,
+            reader.Name,
+            reader.Email,
+            reader.Phone,
+            reader.RegisteredAt,
+            reader.LibraryId,
+            reader.Loans
+        };
+        
+        response.Message = "Reader Buscado com sucesso!";
         response.Data = Data;
         return response;
     }
