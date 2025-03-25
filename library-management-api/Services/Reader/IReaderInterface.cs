@@ -9,4 +9,5 @@ public interface IReaderInterface
     Task<ResponseModel<ReaderModel>> AddReader(LibraryModel library, AddReaderRequestDto request);
     Task<ResponseModel<Object>> GetAllReaders(LibraryModel library);
     Task<ResponseModel<Object>> GetReaderById(LibraryModel library, Guid Id);
+    Task<ResponseModel<List<ReaderModel>>> GetReaderByName(LibraryModel library, string Name);
 }

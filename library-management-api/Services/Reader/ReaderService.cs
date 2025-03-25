@@ -85,4 +85,24 @@ public class ReaderService : IReaderInterface
         response.Data = Data;
         return response;
     }
+
+    public async Task<ResponseModel<List<ReaderModel>>> GetReaderByName(LibraryModel library, string Name)
+    {
+        ResponseModel<List<ReaderModel>> response = new ResponseModel<List<ReaderModel>>();
+
+        var readers = await _context.Readers
+            .Where(x => x.Name.ToLower().Contains(Name.ToLower()) && x.LibraryId == library.Id)
+            .ToListAsync();
+
+        if (readers.Count == 0)
+        {
+            throw new NotFoundException("Nenhum reader encontrado!");
+        }
+
+       
+
+        response.Message = "Leitores encontrados com sucesso!";
+        response.Data = readers;
+        return response;
+    }
 }
