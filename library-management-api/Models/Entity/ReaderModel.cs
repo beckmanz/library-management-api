@@ -14,5 +14,5 @@ public class ReaderModel
     [JsonIgnore]
     public LibraryModel Library { get; set; }
     [JsonIgnore]
-    public IEnumerable<LoanModel> Loans { get; set; }
+    public ICollection<LoanModel> Loans { get; set; }
 }

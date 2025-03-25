@@ -11,11 +11,11 @@ public class LibraryModel
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [JsonIgnore]
-    public IEnumerable<BookModel> Books { get; set; }
+    public ICollection<BookModel> Books { get; set; }
     [JsonIgnore]
-    public IEnumerable<LoanModel> Loans { get; set; }
+    public ICollection<LoanModel> Loans { get; set; }
     [JsonIgnore]
-    public IEnumerable<ReaderModel> Readers { get; set; }
+    public ICollection<ReaderModel> Readers { get; set; }
     [JsonIgnore]
-    public IEnumerable<AuthorModel> Authors { get; set; }
+    public ICollection<AuthorModel> Authors { get; set; }
 }

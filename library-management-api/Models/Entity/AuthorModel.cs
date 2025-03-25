@@ -12,5 +12,5 @@ public class AuthorModel
     [JsonIgnore]
     public LibraryModel Library { get; set; }
     [JsonIgnore]
-    public IEnumerable<BookModel> Books { get; set; }
+    public ICollection<BookModel> Books { get; set; }
 }
