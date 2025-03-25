@@ -98,11 +98,33 @@ public class ReaderService : IReaderInterface
         {
             throw new NotFoundException("Nenhum reader encontrado!");
         }
-
-       
-
         response.Message = "Leitores encontrados com sucesso!";
         response.Data = readers;
+        return response;
+    }
+
+    public async Task<ResponseModel<ReaderModel>> EditReader(LibraryModel library, Guid Id, EditReaderRequestDto request)
+    {
+        ResponseModel<ReaderModel> response = new ResponseModel<ReaderModel>();
+        if (string.IsNullOrWhiteSpace(request.Name) &&
+            string.IsNullOrWhiteSpace(request.Email) &&
+            string.IsNullOrWhiteSpace(request.Phone))
+        {
+            throw new BadRequestException("Nenhuma informação foi fornecida para atualização.");
+        }
+        var reader = await _context.Readers
+            .FirstOrDefaultAsync(x=> x.Id == Id && x.LibraryId == library.Id);
+        if (reader is null)
+        {
+            throw new NotFoundException("Nenhum reader encontrado!");
+        }
+        if (!string.IsNullOrWhiteSpace(request.Name)) reader.Name = request.Name;
+        if (!string.IsNullOrWhiteSpace(request.Email)) reader.Email = request.Email;
+        if (!string.IsNullOrWhiteSpace(request.Phone)) reader.Phone = request.Phone;
+        _context.Update(reader);
+        await _context.SaveChangesAsync();
+        response.Data = reader;
+        response.Message = "Leitor atualizado com sucesso!";
         return response;
     }
 }
