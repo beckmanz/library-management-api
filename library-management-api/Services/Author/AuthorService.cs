@@ -75,6 +75,23 @@ public class AuthorService : IAuthorInterface
         return response;
     }
 
+    public async Task<ResponseModel<List<AuthorModel>>> GetAuthorByName(LibraryModel library, string Name)
+    {
+        ResponseModel<List<AuthorModel>> response = new ResponseModel<List<AuthorModel>>();
+
+        var authors = await _context.Authors
+            .Where(x => x.Name.ToLower().Contains(Name.ToLower()) && x.LibraryId == library.Id)
+            .ToListAsync();
+
+        if (authors.Count == 0)
+        {
+            throw new NotFoundException("Nenhum autor encontrado!");
+        }
+        response.Message = "Autores encontrados com sucesso!";
+        response.Data = authors;
+        return response;
+    }
+
     public async Task<ResponseModel<AuthorModel>> EditAuthor(LibraryModel library, Guid Id, EditAuthorRequestDto request)
     {
         ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
