@@ -11,4 +11,5 @@ public interface IReaderInterface
     Task<ResponseModel<Object>> GetReaderById(LibraryModel library, Guid Id);
     Task<ResponseModel<List<ReaderModel>>> GetReaderByName(LibraryModel library, string Name);
     Task<ResponseModel<ReaderModel>> EditReader(LibraryModel library, Guid Id, EditReaderRequestDto request);
+    Task<ResponseModel<ReaderModel>> DeleteReader(LibraryModel library, Guid Id);
 }

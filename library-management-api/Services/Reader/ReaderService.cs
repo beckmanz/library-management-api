@@ -127,4 +127,29 @@ public class ReaderService : IReaderInterface
         response.Message = "Leitor atualizado com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<ReaderModel>> DeleteReader(LibraryModel library, Guid Id)
+    {
+        ResponseModel<ReaderModel> response = new ResponseModel<ReaderModel>();
+        var reader = await _context.Readers.Include(x=> x.Loans).FirstOrDefaultAsync(x=> x.Id == Id && x.LibraryId == library.Id);
+        if (reader is null)
+        {
+            throw new NotFoundException("Nenhum reader encontrado!");
+        }
+        
+        var loansActive = reader.Loans
+            .Where(x=> x.IsReturned == false)
+            .ToList();
+
+        if (loansActive.Count > 0)
+        {
+            throw new ValidationException("Este leitor possui empréstimos com devolução pendente!");
+        }
+        _context.Loans.RemoveRange(reader.Loans);
+        _context.Remove(reader);
+        await _context.SaveChangesAsync();
+        
+        response.Message = "Reader excluído com sucesso!";
+        return response;
+    }
 }
