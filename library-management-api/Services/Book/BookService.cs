@@ -72,6 +72,23 @@ public class BookService : IBookInterface
         return response;
     }
 
+    public async Task<ResponseModel<List<BookModel>>> GetBookByTitle(LibraryModel library, string Title)
+    {
+        ResponseModel<List<BookModel>> response = new ResponseModel<List<BookModel>>();
+
+        var books = await _context.Books
+            .Where(x => x.Title.ToLower().Contains(Title.ToLower()) && x.LibraryId == library.Id)
+            .ToListAsync();
+
+        if (books.Count == 0)
+        {
+            throw new NotFoundException("Nenhum Livro encontrado!");
+        }
+        response.Message = "Livros encontrados com sucesso!";
+        response.Data = books;
+        return response;
+    }
+
     public async Task<ResponseModel<BookModel>> EditBook(LibraryModel library, EditBookRequestDto request)
     {
         ResponseModel<BookModel> response = new ResponseModel<BookModel>();
