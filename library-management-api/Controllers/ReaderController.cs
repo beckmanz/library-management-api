@@ -72,7 +72,7 @@ namespace library_management_api.Controllers
             return Ok(response);
         }
         [HttpPut("{Id}")]
-        public async Task<ActionResult<ResponseModel<List<ReaderModel>>>> GetReaderByName(Guid Id, EditReaderRequestDto request)
+        public async Task<ActionResult<ResponseModel<ReaderModel>>> EditReader(Guid Id, EditReaderRequestDto request)
         {
             var token = HttpContext.Request.Cookies["AuthCookie"];
             var library = await _authInterface.VerifyAccessToken(token);
