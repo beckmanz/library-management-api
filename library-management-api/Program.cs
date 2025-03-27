@@ -6,6 +6,7 @@ using library_management_api.Extensions;
 using library_management_api.Middlewares;
 using library_management_api.Services.Author;
 using library_management_api.Services.Book;
+using library_management_api.Services.Loan;
 using library_management_api.Services.Reader;
 using Scalar.AspNetCore;
 
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IAuthInterface, AuthService>();
 builder.Services.AddScoped<IBookInterface, BookService>();
 builder.Services.AddScoped<IAuthorInterface, AuthorService>();
 builder.Services.AddScoped<IReaderInterface, ReaderService>();
+builder.Services.AddScoped<ILoanInterface, LoanService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
