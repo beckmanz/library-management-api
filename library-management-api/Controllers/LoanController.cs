@@ -47,5 +47,17 @@ namespace library_management_api.Controllers
             var response = await _loanInterface.GetAllLoans(library);
             return Ok(response);
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ResponseModel<LoanResponseDto>>> GetLoan(Guid id)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            var response = await _loanInterface.GetLoan(library, id);
+            return Ok(response);
+        }
     }
 }

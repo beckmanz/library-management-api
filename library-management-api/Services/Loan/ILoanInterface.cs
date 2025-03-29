@@ -7,4 +7,5 @@ public interface ILoanInterface
 {
     Task<ResponseModel<LoanModel>> RegisterNewLoan(LibraryModel library, RegisterNewLoanRequestDto request);
     Task<ResponseModel<List<LoanResponseDto>>> GetAllLoans(LibraryModel library);
+    Task<ResponseModel<LoanResponseDto>> GetLoan(LibraryModel library, Guid id);
 }

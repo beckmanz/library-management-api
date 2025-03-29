@@ -79,4 +79,31 @@ public class LoanService : ILoanInterface
         response.Message = "Emprestimos retornados com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<LoanResponseDto>> GetLoan(LibraryModel library, Guid id)
+    {
+        ResponseModel<LoanResponseDto> response = new ResponseModel<LoanResponseDto>();
+        var loan = await _context.Loans
+            .Include(x => x.Book)
+            .Include(x => x.Reader)
+            .Where(x => x.Id == id && x.LibraryId == library.Id)
+            .Select(x=> new LoanResponseDto()
+            {
+                Id = x.Id,
+                LoanDate = x.LoanDate,
+                ReturnDate = x.ReturnDate,
+                ReturnedAt = x.ReturnedAt,
+                IsReturned = x.IsReturned,
+                Book = x.Book,
+                Reader = x.Reader
+            })
+            .FirstOrDefaultAsync();
+        if (loan is null)
+        {
+            throw new NotFoundException("Nenhum emprestimo encontrado");
+        }
+        response.Data = loan;
+        response.Message = "Emprestimo retornado com sucesso!";
+        return response;
+    }
 }
