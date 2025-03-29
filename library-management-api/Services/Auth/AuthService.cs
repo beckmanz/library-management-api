@@ -114,7 +114,13 @@ public class AuthService : IAuthInterface
         var jwtToken = handler.ReadJwtToken(token);
         var Id = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         
-        var Library = await _context.Librarys.FirstOrDefaultAsync(u => u.Id == new Guid(Id));
+        var Library = await _context.Librarys
+            .Include(x=> x.Books)
+            .Include(x=> x.Readers)
+            .Include(x=> x.Loans)
+            .Include(x=> x.Authors)
+            .FirstOrDefaultAsync(u => u.Id == new Guid(Id));
+        
         return Library;
     }
 }
