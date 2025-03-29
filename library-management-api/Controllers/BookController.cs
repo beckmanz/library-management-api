@@ -36,7 +36,7 @@ namespace library_management_api.Controllers
             return Ok(response);
         }
         [HttpGet]
-        public async Task<ActionResult<ResponseModel<object>>> GetAllBooks()
+        public async Task<ActionResult<ResponseModel<List<BookModel>>>> GetAllBooks()
         {
             var token = HttpContext.Request.Cookies["AuthCookie"];
             var library = await _authInterface.VerifyAccessToken(token);
@@ -84,7 +84,7 @@ namespace library_management_api.Controllers
             return Ok(response);
         }
         [HttpDelete("{Id}")]
-        public async Task<ActionResult<ResponseModel<object>>> DeleteBook(Guid Id)
+        public async Task<ActionResult<ResponseModel<BookModel>>> DeleteBook(Guid Id)
         {
             var token = HttpContext.Request.Cookies["AuthCookie"];
             var library = await _authInterface.VerifyAccessToken(token);
