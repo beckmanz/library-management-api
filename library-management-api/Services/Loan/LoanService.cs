@@ -54,4 +54,29 @@ public class LoanService : ILoanInterface
         response.Message = "Novo emprestimo cadastrado com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<List<LoanResponseDto>>> GetAllLoans(LibraryModel library)
+    {
+        ResponseModel<List<LoanResponseDto>> response = new ResponseModel<List<LoanResponseDto>>();
+        var loans = await _context.Loans
+            .AsNoTracking()
+            .Include(x => x.Book)
+            .Include(x => x.Reader)
+            .Where(x=> x.LibraryId == library.Id)
+            .Select(x=> new LoanResponseDto()
+            {
+                Id = x.Id,
+                LoanDate = x.LoanDate,
+                ReturnDate = x.ReturnDate,
+                ReturnedAt = x.ReturnedAt,
+                IsReturned = x.IsReturned,
+                Book = x.Book,
+                Reader = x.Reader,
+            })
+            .ToListAsync();
+        
+        response.Data = loans;
+        response.Message = "Emprestimos retornados com sucesso!";
+        return response;
+    }
 }
