@@ -1,6 +1,9 @@
-﻿namespace library_management_api.Services.Library;
+﻿using library_management_api.Models.Dto;
+using library_management_api.Models.Entity;
+
+namespace library_management_api.Services.Library;
 
 public interface ILibraryInterface
 {
-    
+    Task<ResponseModel<LibraryResponseDto>> GetLibrary(LibraryModel library);
 }
