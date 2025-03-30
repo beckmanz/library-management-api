@@ -49,5 +49,18 @@ namespace library_management_api.Controllers
             var response = await _libraryInterface.EditLibrary(library, request);
             return Ok(response);
         }
+        [HttpDelete]
+        public async Task<ActionResult<ResponseModel<LibraryResponseDto>>> DeleteLibrary(string password)
+        {
+            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var library = await _authInterface.VerifyAccessToken(token);
+            if (library is null)
+            {
+                throw new UnauthorizedException("Acesso negado!");
+            }
+            
+            var response = await _libraryInterface.DeleteLibrary(library, password);
+            return Ok(response);
+        }
     }
 }

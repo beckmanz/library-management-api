@@ -81,4 +81,20 @@ public class LibraryService : ILibraryInterface
         response.Message = "Informações da biblioteca atualizadas com sucesso!";
         return response;
     }
+
+    public async Task<ResponseModel<LibraryResponseDto>> DeleteLibrary(LibraryModel library, string password)
+    {
+        ResponseModel<LibraryResponseDto> response = new ResponseModel<LibraryResponseDto>();
+        if (!BCrypt.Net.BCrypt.Verify(password, library.PasswordHash))
+            throw new UnauthorizedException("Senha incorreta!");
+        
+        _context.RemoveRange(library.Loans);
+        _context.RemoveRange(library.Books);
+        _context.RemoveRange(library.Authors);
+        _context.RemoveRange(library.Readers);
+        _context.Librarys.Remove(library);
+        await _context.SaveChangesAsync();
+        response.Message = "Biblioteca removida com sucesso!";
+        return response;
+    }
 }
