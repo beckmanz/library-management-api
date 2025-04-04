@@ -26,7 +26,8 @@ namespace library_management_api.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseModel<BookModel>>> AddBook(AddBookRequestDto request)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -38,7 +39,8 @@ namespace library_management_api.Controllers
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<BookModel>>>> GetAllBooks()
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -50,7 +52,8 @@ namespace library_management_api.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<ResponseModel<BookModel>>> GetBook(Guid Id)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -62,7 +65,8 @@ namespace library_management_api.Controllers
         [HttpGet("bytitle/{Title}")]
         public async Task<ActionResult<ResponseModel<BookModel>>> GetBookByTitle(string Title)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -74,7 +78,8 @@ namespace library_management_api.Controllers
         [HttpPut]
         public async Task<ActionResult<ResponseModel<BookModel>>> EditBook(EditBookRequestDto request)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -86,7 +91,8 @@ namespace library_management_api.Controllers
         [HttpDelete("{Id}")]
         public async Task<ActionResult<ResponseModel<BookModel>>> DeleteBook(Guid Id)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
