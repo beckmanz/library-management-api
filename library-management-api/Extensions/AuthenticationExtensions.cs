@@ -31,23 +31,22 @@ public static class AuthenticationExtensions
             {
                 OnMessageReceived = context =>
                 {
-                    context.Token = context.Request.Cookies["AuthCookie"];
+                    if (context.Request.Headers.ContainsKey("Authorization"))
+                    {
+                        var authHeader = context.Request.Headers["Authorization"].ToString();
+                        if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                        }
+                    }
                     return Task.CompletedTask;
                 },
                 OnAuthenticationFailed = context =>
                 {
-                Console.WriteLine($"Falha na autenticação: {context.Exception.Message}");
-                return Task.CompletedTask;
+                    Console.WriteLine($"Falha na autenticação: {context.Exception.Message}");
+                    return Task.CompletedTask;
                 }
             };
-        })
-        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-        {
-            options.Cookie.Name = "AuthCookie";
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            options.Cookie.SameSite = SameSiteMode.Strict;
-            options.ExpireTimeSpan = TimeSpan.FromDays(7);
         });
 
         return services;

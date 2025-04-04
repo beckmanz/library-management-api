@@ -3,3 +3,8 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.idea/.idea.library-management-api/.idea/.gitignore
+.idea/.idea.library-management-api/.idea/dataSources.xml
+.idea/.idea.library-management-api/.idea/encodings.xml
+.idea/.idea.library-management-api/.idea/indexLayout.xml
+.idea/.idea.library-management-api/.idea/vcs.xml
