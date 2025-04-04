@@ -26,7 +26,8 @@ namespace library_management_api.Controllers
         [HttpGet]
         public async Task<ActionResult<ResponseModel<LibraryResponseDto>>> GetLibrary()
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -39,7 +40,8 @@ namespace library_management_api.Controllers
         [HttpPut]
         public async Task<ActionResult<ResponseModel<LibraryResponseDto>>> EditLibrary(EditLibraryRequestDto request)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -52,7 +54,8 @@ namespace library_management_api.Controllers
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<LibraryResponseDto>>> DeleteLibrary(string password)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {

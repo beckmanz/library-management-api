@@ -20,48 +20,13 @@ namespace library_management_api.Controllers
         public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Signup(SignupRequestDto signupRequest)
         {
             var response = await _authInterface.Signup(signupRequest);
-            var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
-
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7)
-            };
-
-            Response.Cookies.Append("AuthCookie", token, cookieOptions);
             return Ok(response);
         }
         [HttpPost("signin")]
         public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Signup(SigninRequestDto signinRequest)
         {
             var response = await _authInterface.Signin(signinRequest);
-            var token = _authInterface.GetAccessToken(response.Data.Id, response.Data.Name);
-
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7)
-            };
-
-            Response.Cookies.Append("AuthCookie", token, cookieOptions);
             return Ok(response);
-        }
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(-1)
-            };
-            Response.Cookies.Delete("AuthCookie", cookieOptions);
-            return Ok(new { Message = "Logout realizado com sucesso" });
         }
     }
 }

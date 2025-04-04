@@ -26,7 +26,8 @@ namespace library_management_api.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseModel<LoanModel>>> RegisterNewLoan(RegisterNewLoanRequestDto request)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -38,7 +39,8 @@ namespace library_management_api.Controllers
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<LoanResponseDto>>>> GetAllLoans()
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -50,7 +52,8 @@ namespace library_management_api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseModel<LoanResponseDto>>> GetLoan(Guid id)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
@@ -62,7 +65,8 @@ namespace library_management_api.Controllers
         [HttpPut("return/{id}")]
         public async Task<ActionResult<ResponseModel<LoanResponseDto>>> ReturnBook(Guid id)
         {
-            var token = HttpContext.Request.Cookies["AuthCookie"];
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
             var library = await _authInterface.VerifyAccessToken(token);
             if (library is null)
             {
