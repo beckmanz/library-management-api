@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace library_management_api.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,11 +15,11 @@ namespace library_management_api.Migrations
                 name: "Librarys",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,10 +30,10 @@ namespace library_management_api.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nationality = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Nationality = table.Column<string>(type: "text", nullable: false),
+                    LibraryId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,12 +49,12 @@ namespace library_management_api.Migrations
                 name: "Readers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    RegisteredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LibraryId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,14 +70,14 @@ namespace library_management_api.Migrations
                 name: "Books",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublicationYear = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Genre = table.Column<string>(type: "text", nullable: false),
+                    PublicationYear = table.Column<int>(type: "integer", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    AddedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LibraryId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,14 +99,14 @@ namespace library_management_api.Migrations
                 name: "Loans",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoanDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReturnedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsReturned = table.Column<bool>(type: "bit", nullable: false),
-                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LoanDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReturnedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsReturned = table.Column<bool>(type: "boolean", nullable: false),
+                    BookId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReaderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LibraryId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
