@@ -50,7 +50,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(options =>
+    {
+        options.Servers = new List<ScalarServer>
+        {
+            new ScalarServer("https://library-management-api-7z33.onrender.com", "Production Server")
+        };
+        options.Theme = ScalarTheme.Purple;
+        options.Layout = ScalarLayout.Modern;
+        options.DarkMode = true;
+    });
 }
 app.UseCors("PublicPolicy");
 app.UseMiddleware<ExceptionMiddleware>();
