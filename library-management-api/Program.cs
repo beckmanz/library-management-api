@@ -13,13 +13,6 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(int.Parse(port));
-});
-
-
 // Add services to the container.
 builder.Services.AddControllers().AddFluentValidation(config =>
 {
@@ -57,12 +50,23 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
-    app.UseHttpsRedirection();
+    app.MapScalarApiReference(options =>
+    {
+        options.Servers = new List<ScalarServer>
+        {
+            new ScalarServer("https://library-management-api-7z33.onrender.com", "Production Server")
+        };
+        options.Theme = ScalarTheme.Purple;
+        options.Layout = ScalarLayout.Modern;
+        options.DarkMode = true;
+    });
 }
 app.UseCors("PublicPolicy");
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthentication();
 app.UseAuthorization();
 
