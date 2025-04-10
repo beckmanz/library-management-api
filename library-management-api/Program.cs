@@ -21,6 +21,17 @@ builder.Services.AddControllers().AddFluentValidation(config =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PublicPolicy", policy =>
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowCredentials();
+        policy.SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+    });
+});
 
 builder.Services.AddScoped<IAuthInterface, AuthService>();
 builder.Services.AddScoped<IBookInterface, BookService>();
@@ -43,6 +54,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+app.UseCors("PublicPolicy");
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
