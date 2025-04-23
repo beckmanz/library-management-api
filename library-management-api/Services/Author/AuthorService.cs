@@ -33,21 +33,13 @@ public class AuthorService : IAuthorInterface
         return response;
     }
 
-    public async Task<ResponseModel<object>> GetAllAuthors(LibraryModel library)
+    public async Task<ResponseModel<List<AuthorModel>>> GetAllAuthors(LibraryModel library)
     {
-        ResponseModel<object> response = new ResponseModel<object>();
+        ResponseModel<List<AuthorModel>> response = new ResponseModel<List<AuthorModel>>();
         var authors = await _context.Authors.Where(a => a.LibraryId == library.Id).ToListAsync();
         
-        var Data = new
-        {
-            library.Id,
-            library.Name,
-            library.CreatedAt,
-            Authors = authors
-        };
-        
         response.Message = "Autores retornados com sucesso!";
-        response.Data = Data;
+        response.Data = authors;
         return response;
     }
 

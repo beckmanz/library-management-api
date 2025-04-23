@@ -37,7 +37,7 @@ namespace library_management_api.Controllers
             return Ok(response);
         }
         [HttpGet]
-        public async Task<ActionResult<ResponseModel<object>>> GetAllAuthors()
+        public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> GetAllAuthors()
         {
             var authorizationHeader = Request.Headers["Authorization"].ToString();
             var token = authorizationHeader.Substring("Bearer ".Length).Trim();
